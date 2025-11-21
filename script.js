@@ -18,8 +18,9 @@ const prevNo = document.getElementById('previewNo');
 
 const previewBtn = document.getElementById('previewBtn');
 const resetBtn = document.getElementById('resetBtn');
-const downloadBtn = document.getElementById('downloadBtn');
 const darkToggle = document.getElementById('darkToggle');
+const downloadImgBtn = document.getElementById('downloadImgBtn');
+
 
 // Batasi tanggal maksimal = hari ini
 const today = new Date().toISOString().split("T")[0];
@@ -144,31 +145,73 @@ resetBtn.onclick = () => {
   if(perihal) perihal.value = '';
 };
 
-downloadBtn.onclick = () => {
-  const element = document.getElementById('surat');
-  const sigImg = document.getElementById('sigPreview');
-  const opt = {
-    margin: 10,
-    filename: 'surat-izin.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
+/* PDF download removed per request */
 
-  const generatePdf = () => html2pdf().set(opt).from(element).save();
+// Download preview as image (PNG) using html2canvas (loaded dynamically if needed)
+if(downloadImgBtn){
+  downloadImgBtn.addEventListener('click', async ()=>{
+    try{
+      if(introModal) introModal.style.display = 'none';
+      if(typeof generateText === 'function') generateText();
+      if(typeof attachSignatureToPreview === 'function') attachSignatureToPreview();
 
-  // If a signature image is present and visible, wait for it to load to ensure it's included
-  if(sigImg && sigImg.src && sigImg.style.display !== 'none'){
-    if(!sigImg.complete){
-      sigImg.addEventListener('load', generatePdf, { once: true });
-      sigImg.addEventListener('error', generatePdf, { once: true });
-    } else {
-      generatePdf();
+      const element = document.getElementById('surat');
+      if(!element){ alert('Preview tidak ditemukan. Tekan "Tampilkan Preview" terlebih dahulu.'); return; }
+
+      downloadImgBtn.disabled = true;
+
+      // wait for images in preview
+      const imgs = Array.from(element.querySelectorAll('img')).filter(i=>i.src);
+      await Promise.all(imgs.map(img => new Promise((resolve) => {
+        if(img.complete) return resolve();
+        img.addEventListener('load', ()=>resolve(), { once: true });
+        img.addEventListener('error', ()=>resolve(), { once: true });
+      })));
+
+      // dynamic loader for html2canvas
+      const loadHtml2canvas = () => new Promise((resolve, reject) => {
+        if(window.html2canvas || window.html2canvas === undefined && window.html2canvas === undefined){
+          // proceed to load script
+        }
+        if(window.html2canvas || window.html2canvas !== undefined) return resolve(window.html2canvas);
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        s.onload = () => resolve(window.html2canvas || window.html2canvas);
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+
+      // ensure html2canvas available
+      if(!window.html2canvas && !window.html2canvas){
+        await loadHtml2canvas();
+      }
+
+      if(window.html2canvas || window.html2canvas){
+        // use html2canvas to render
+        const canv = await window.html2canvas(element, {scale:2, useCORS:true, logging:false});
+        canv.toBlob((blob)=>{
+          if(!blob){ alert('Gagal membuat gambar.'); downloadImgBtn.disabled = false; return; }
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'surat-izin.png';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+          downloadImgBtn.disabled = false;
+        }, 'image/png', 0.95);
+      } else {
+        alert('Tidak dapat memuat library screenshot.');
+        downloadImgBtn.disabled = false;
+      }
+    }catch(err){
+      console.error('Image generation failed', err);
+      alert('Gagal membuat gambar. Periksa console.');
+      downloadImgBtn.disabled = false;
     }
-  } else {
-    generatePdf();
-  }
-};
+  });
+}
  
 function setTheme(isDark){
   const switchEl = darkToggle.querySelector('.switch');
@@ -358,5 +401,4 @@ resetBtn.addEventListener('click', ()=>{
   const sigInfo = document.getElementById('sigInfo');
   if(sigInfo) sigInfo.style.display = 'none';
 });
-
 

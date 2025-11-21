@@ -137,7 +137,7 @@ button{background:#ff513a;color:#fff;}
 .sig-info .muted{display:block}
 
 /* Watermark subtle (optional) */
-.preview-box::before{content:'';position:absolute;left:50%;top:60px;transform:translateX(-50%);opacity:0.03;width:420px;height:420px;background:url('') no-repeat center/contain}
+.preview-box::before{content:'';position:absolute;left:50%;top:60px;transform:translateX(-50%);opacity:0.03;width:420px;height:420px;background:url('') no-repeat center/contain;pointer-events:none}
 
 /* Paragraph formatting like a written letter */
 .preview p{margin:0 0 1.1em 0}
@@ -154,8 +154,15 @@ button{background:#ff513a;color:#fff;}
 }
 .actions button:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(15,23,42,0.08)}
 .actions button:active{transform:translateY(0)}
+
 .actions button.secondary{background:#f3f4f6;color:#111;border:1px solid rgba(0,0,0,0.06)}
 .actions button:not(.secondary){background:linear-gradient(90deg,#ff6b4a,#ff513a);color:#fff}
+
+/* Image download button styling */
+#downloadImgBtn{background:linear-gradient(90deg,#06b6d4,#0ea5a4) !important;color:#fff !important;border:none;padding:10px 14px;border-radius:10px;cursor:pointer}
+#downloadImgBtn .img-btn{display:inline-flex;align-items:center;gap:8px}
+#downloadImgBtn .img-icon{width:18px;height:18px}
+#downloadImgBtn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(6,95,70,0.12)}
 
 /* Signature controls polish */
 .signature-pad{border-radius:8px;border:1px dashed #e6e6e6;padding:6px;background:linear-gradient(180deg,#fff,#fcfcfc)}
