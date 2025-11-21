@@ -3,9 +3,18 @@ const kelas = document.getElementById('kelas');
 const jenis = document.getElementById('jenis');
 const tanggal = document.getElementById('tanggal');
 const catatan = document.getElementById('catatan');
+const schoolName = document.getElementById('schoolName');
+const letterheadEl = document.getElementById('letterhead');
+const helpBtn = document.getElementById('helpBtn');
+const introModal = document.getElementById('introModal');
+const dontShowIntro = document.getElementById('dontShowIntro');
+const gotItBtn = document.getElementById('gotItBtn');
+const closeIntroBtn = document.getElementById('closeIntro');
 
 const prevTanggal = document.getElementById('previewTanggal');
 const prevIsi = document.getElementById('previewIsi');
+const prevPerihal = document.getElementById('previewPerihal');
+const prevNo = document.getElementById('previewNo');
 
 const previewBtn = document.getElementById('previewBtn');
 const resetBtn = document.getElementById('resetBtn');
@@ -16,6 +25,65 @@ const darkToggle = document.getElementById('darkToggle');
 const today = new Date().toISOString().split("T")[0];
 tanggal.max = today;
 tanggal.value = today;
+
+// initialize school name (persisted in localStorage)
+const DEFAULT_SCHOOL = 'SMKN 1 Grogol';
+if(schoolName){
+  const savedSchool = localStorage.getItem('schoolName');
+  schoolName.value = savedSchool || '';
+  if(letterheadEl) letterheadEl.textContent = savedSchool || DEFAULT_SCHOOL;
+  schoolName.addEventListener('input', (e)=>{
+    const v = (e.target.value || '').trim();
+    if(letterheadEl) letterheadEl.textContent = v || DEFAULT_SCHOOL;
+    localStorage.setItem('schoolName', v);
+  });
+}
+
+// school address, nomor, perihal, jabatan references
+const schoolAddressInput = document.getElementById('schoolAddress');
+const schoolAddressPreview = document.getElementById('schoolAddressPreview');
+const footerAddress = document.getElementById('footerAddress');
+const nomorSurat = document.getElementById('nomorSurat');
+const perihal = document.getElementById('perihal');
+const sigRoleInput = document.getElementById('sigRole');
+
+// initialize school address from localStorage
+if(schoolAddressInput){
+  const savedAddr = localStorage.getItem('schoolAddress');
+  schoolAddressInput.value = savedAddr || '';
+  if(schoolAddressPreview) schoolAddressPreview.textContent = savedAddr || 'Jl. Contoh No.1 — Kediri';
+  if(footerAddress) footerAddress.textContent = savedAddr || 'Jl. Contoh No.1 — Kediri';
+  schoolAddressInput.addEventListener('input', (e)=>{
+    const v = (e.target.value || '').trim();
+    if(schoolAddressPreview) schoolAddressPreview.textContent = v || 'Jl. Contoh No.1 — Kediri';
+    if(footerAddress) footerAddress.textContent = v || 'Jl. Contoh No.1 — Kediri';
+    localStorage.setItem('schoolAddress', v);
+  });
+}
+
+// Intro/help modal handling
+function openIntro(){
+  if(introModal) introModal.style.display = 'flex';
+}
+function closeIntro(save){
+  if(introModal) introModal.style.display = 'none';
+  if(save && dontShowIntro && dontShowIntro.checked){
+    localStorage.setItem('seenIntro','true');
+  }
+}
+
+if(helpBtn) helpBtn.addEventListener('click', ()=> openIntro());
+if(gotItBtn) gotItBtn.addEventListener('click', ()=> closeIntro(dontShowIntro && dontShowIntro.checked));
+if(closeIntroBtn) closeIntroBtn.addEventListener('click', ()=> closeIntro(dontShowIntro && dontShowIntro.checked));
+
+// Show intro/modal on first visit (unless user opted out)
+try{
+  const seen = localStorage.getItem('seenIntro');
+  if(!seen || seen !== 'true'){
+    // small delay so layout settles
+    setTimeout(openIntro, 600);
+  }
+}catch(e){ /* ignore storage errors */ }
 
 function generateText(){
   const n = nama.value.trim();
@@ -46,7 +114,12 @@ Demikian surat izin ini saya buat dengan sebenar-benarnya. Atas perhatian dan pe
 
   const extra = c ? `<br><br>Catatan tambahan: ${c}` : "";
 
+  const no = (nomorSurat && nomorSurat.value) ? nomorSurat.value.trim() : '';
+  const p = (perihal && perihal.value) ? perihal.value.trim() : '';
+
   prevTanggal.innerHTML = `Kediri, ${t}`;
+  if(prevPerihal) prevPerihal.innerHTML = p ? `<strong>Perihal:</strong> ${p}` : `<strong>Perihal:</strong> —`;
+  if(prevNo) prevNo.innerText = no ? `No: ${no}` : 'No: —';
   prevIsi.innerHTML = jenisText + extra;
 }
 
@@ -60,6 +133,15 @@ resetBtn.onclick = () => {
   tanggal.value = today;
   prevTanggal.innerHTML = "Kediri, —";
   prevIsi.innerHTML = "Isi surat akan tampil di sini.";
+  // reset school name to default (do not erase user's placeholder entirely)
+  if(schoolName) { schoolName.value = ''; }
+  if(letterheadEl) { letterheadEl.textContent = DEFAULT_SCHOOL; }
+  // clear new fields
+  if(schoolAddressInput) { schoolAddressInput.value = ''; }
+  if(schoolAddressPreview) { schoolAddressPreview.textContent = 'Jl. Contoh No.1 — Kediri'; }
+  if(footerAddress) { footerAddress.textContent = 'Jl. Contoh No.1 — Kediri'; }
+  if(nomorSurat) nomorSurat.value = '';
+  if(perihal) perihal.value = '';
 };
 
 downloadBtn.onclick = () => {
@@ -188,12 +270,14 @@ if(signaturePad){
     // also set name and date from inputs into preview
     const nameVal = sigNameInput ? sigNameInput.value.trim() : '';
     const dateVal = sigDateInput ? sigDateInput.value : '';
-    const sigNamePreview = document.getElementById('sigNamePreview');
-    const sigDatePreview = document.getElementById('sigDatePreview');
-    const sigInfo = document.getElementById('sigInfo');
-    if(sigNamePreview) sigNamePreview.textContent = nameVal || '';
-    if(sigDatePreview) sigDatePreview.textContent = dateVal ? (new Date(dateVal)).toLocaleDateString() : '';
-    if(sigInfo) sigInfo.style.display = (nameVal || dateVal) ? 'block' : (sigImg && sigImg.src ? 'block' : 'none');
+      const sigNamePreview = document.getElementById('sigNamePreview');
+      const sigDatePreview = document.getElementById('sigDatePreview');
+      const sigRolePreview = document.getElementById('sigRolePreview');
+      const sigInfo = document.getElementById('sigInfo');
+      if(sigNamePreview) sigNamePreview.textContent = nameVal || '';
+      if(sigRolePreview) sigRolePreview.textContent = sigRoleInput && sigRoleInput.value ? sigRoleInput.value : '';
+      if(sigDatePreview) sigDatePreview.textContent = dateVal ? (new Date(dateVal)).toLocaleDateString() : '';
+      if(sigInfo) sigInfo.style.display = (nameVal || dateVal || (sigRoleInput && sigRoleInput.value)) ? 'block' : (sigImg && sigImg.src ? 'block' : 'none');
   });
 
   uploadSig.addEventListener('change', (ev)=>{
@@ -215,15 +299,17 @@ if(signaturePad){
         sigDataUrl = signaturePad.toDataURL('image/png');
         const sigImg = document.getElementById('sigPreview');
         if(sigImg){ sigImg.src = sigDataUrl; sigImg.style.display = 'block'; }
-        // also copy name/date into preview (if any)
+        // also copy name/date/role into preview (if any)
         const nameVal = sigNameInput ? sigNameInput.value.trim() : '';
         const dateVal = sigDateInput ? sigDateInput.value : '';
         const sigNamePreview = document.getElementById('sigNamePreview');
         const sigDatePreview = document.getElementById('sigDatePreview');
+        const sigRolePreview = document.getElementById('sigRolePreview');
         const sigInfo = document.getElementById('sigInfo');
         if(sigNamePreview) sigNamePreview.textContent = nameVal || '';
+        if(sigRolePreview) sigRolePreview.textContent = sigRoleInput && sigRoleInput.value ? sigRoleInput.value : '';
         if(sigDatePreview) sigDatePreview.textContent = dateVal ? (new Date(dateVal)).toLocaleDateString() : '';
-        if(sigInfo) sigInfo.style.display = (nameVal || dateVal) ? 'block' : (sigImg && sigImg.src ? 'block' : 'none');
+        if(sigInfo) sigInfo.style.display = (nameVal || dateVal || (sigRoleInput && sigRoleInput.value)) ? 'block' : (sigImg && sigImg.src ? 'block' : 'none');
       };
       img.src = evt.target.result;
     };
@@ -240,12 +326,15 @@ function attachSignatureToPreview(){
   // also attach name/date if inputs exist
   const sigNamePreview = document.getElementById('sigNamePreview');
   const sigDatePreview = document.getElementById('sigDatePreview');
+  const sigRolePreview = document.getElementById('sigRolePreview');
   const sigInfo = document.getElementById('sigInfo');
   const nameVal = sigNameInput ? sigNameInput.value.trim() : '';
   const dateVal = sigDateInput ? sigDateInput.value : '';
+  const roleVal = sigRoleInput ? sigRoleInput.value.trim() : '';
   if(sigNamePreview) sigNamePreview.textContent = nameVal || '';
   if(sigDatePreview) sigDatePreview.textContent = dateVal ? (new Date(dateVal)).toLocaleDateString() : '';
-  if(sigInfo) sigInfo.style.display = (sigImg && sigImg.src) ? 'block' : 'none';
+  if(sigRolePreview) sigRolePreview.textContent = roleVal || '';
+  if(sigInfo) sigInfo.style.display = (sigImg && sigImg.src) || roleVal || nameVal || dateVal ? 'block' : 'none';
 }
 
 // hook into previewBtn to also attach signature
@@ -265,6 +354,7 @@ resetBtn.addEventListener('click', ()=>{
   // clear name/date inputs and preview
   if(sigNameInput) sigNameInput.value = '';
   if(sigDateInput) sigDateInput.value = '';
+  if(sigRoleInput) sigRoleInput.value = '';
   const sigInfo = document.getElementById('sigInfo');
   if(sigInfo) sigInfo.style.display = 'none';
 });

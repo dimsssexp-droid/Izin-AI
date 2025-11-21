@@ -15,9 +15,11 @@
       <img id="siteLogo" src="img/logo.jpg" alt="SMKN1GROGOL" class="img-content" />
         <span id="logoCaption" class="logo-caption">SMKN1GROGOL</span>
       <nav class="nav-links" aria-label="Main navigation">
-    
+          <span id="logoCaption" class="logo-caption">SMKN1GROGOL</span>
+        <nav class="nav-links" aria-label="Main navigation">
+        </nav>
         
-
+        
     </div>
   </header>
   <div class="wrap">
@@ -37,8 +39,14 @@
               <span class="knob"></span>
             </span>
           </button>
+          <button id="helpBtn" class="secondary" type="button" title="Bantuan">Bantuan</button>
         </div>
       </div>
+
+      <label>Nama Sekolah</label>
+      <input id="schoolName" type="text" placeholder="contoh: SMKN 1 Grogol" />
+      <label>Alamat Sekolah (opsional)</label>
+      <textarea id="schoolAddress" placeholder="Jl. Contoh No.1, Kediri"></textarea>
 
       <label>Nama</label>
       <input id="nama" type="text" placeholder="contoh: Civitameica"/>
@@ -57,6 +65,12 @@
       <label>Tanggal</label>
       <input id="tanggal" type="date" />
 
+      <label>Nomor Surat</label>
+      <input id="nomorSurat" type="text" placeholder="No: / /2025" />
+
+      <label>Perihal</label>
+      <input id="perihal" type="text" placeholder="Perihal: Permohonan Izin" />
+
       <label>Catatan tambahan (opsional)</label>
       <textarea id="catatan" placeholder="keterangan dokter, alasan singkat, dsb"></textarea>
 
@@ -66,6 +80,7 @@
         <div class="sig-meta-inputs">
           <input id="sigName" type="text" placeholder="Nama penandatangan (mis. Budi)" />
           <input id="sigDate" type="date" />
+          <input id="sigRole" type="text" placeholder="Jabatan (mis. Siswa)" />
         </div>
         <div class="sig-buttons">
           <button id="clearSig" type="button" class="secondary">Hapus</button>
@@ -86,21 +101,62 @@
     <div class="card">
       <h1>Preview Surat</h1>
       <div id="surat" class="preview-box">
+        <header class="preview-header">
+          <div class="ph-center" style="flex:1;text-align:center">
+            <div class="letterhead" id="letterhead">SMKN 1 Grogol</div>
+            <div class="school-address muted" id="schoolAddressPreview">Jl. Contoh No.1 — Kediri</div>
+          </div>
+          <div class="ph-right">
+            <div id="previewNo" class="nomor">No: —</div>
+          </div>
+        </header>
+
         <div id="previewTanggal" class="tanggal">Kediri, —</div>
+        <div id="previewPerihal" class="perihal"><strong>Perihal:</strong> —</div>
+        <div class="kepada">Kepada Yth.<br/>Bapak/Ibu Guru Wali Kelas<br/>di Tempat</div>
+        <div class="salam">Dengan hormat,</div>
         <div id="previewIsi" class="preview">Isi surat akan tampil di sini.</div>
-        <div id="signatureBlock" class="signature-block" style="margin-top:16px;">
+        <div id="signatureBlock" class="signature-block" style="margin-top:24px;">
           <img id="sigPreview" class="signature-preview" alt="Tanda Tangan" style="display:none" />
           <div class="sig-info" style="margin-top:8px; display:none" id="sigInfo">
             <div><strong id="sigNamePreview"></strong></div>
+            <div id="sigRolePreview" class="muted"></div>
             <div id="sigDatePreview" class="muted"></div>
           </div>
         </div>
+        <footer class="preview-footer muted">Alamat: <span id="footerAddress">Jl. Contoh No.1 — Kediri</span> • Telp: (000) 000-000</footer>
       </div>
     </div>
   </div>
 
   <!-- html2pdf CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+  <!-- Intro / Help modal -->
+  <div id="introModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="introTitle" style="display:none">
+    <div class="modal-overlay"></div>
+    <div class="modal-content" role="document">
+      <header class="modal-header">
+        <h2 id="introTitle">Cara Menggunakan Aplikasi</h2>
+        <button id="closeIntro" class="modal-close" aria-label="Tutup">✕</button>
+      </header>
+      <div class="modal-body">
+        <p>Selamat datang! Berikut panduan singkat untuk menggunakan fitur-fitur di halaman ini:</p>
+        <ul>
+          <li><strong>Nama Sekolah:</strong> Isi nama sekolah yang akan muncul di kop surat.</li>
+          <li><strong>Nama / Kelas / Jenis Izin / Tanggal:</strong> Isi data siswa dan pilih jenis izin.</li>
+          <li><strong>Catatan:</strong> Tambahkan keterangan tambahan (opsional).</li>
+          <li><strong>Tanda Tangan:</strong> Gambar tanda tangan di kotak, atau tekan "Upload" untuk memakai gambar, lalu tekan "Gunakan Tanda Tangan" untuk memasukkannya ke preview.</li>
+          <li><strong>Preview:</strong> Tekan "Tampilkan Preview" untuk melihat surat sebelum mendownload.</li>
+          <li><strong>Download PDF:</strong> Tekan "Download PDF" untuk menyimpan surat (tanda tangan akan ikut tersertakan).</li>
+          <li><strong>Mode Gelap:</strong> Gunakan tombol mode gelap di pojok untuk mengganti tema; pilihan tersimpan otomatis.</li>
+        </ul>
+        <label style="display:block;margin-top:8px"><input id="dontShowIntro" type="checkbox" /> Jangan tampilkan lagi</label>
+      </div>
+      <footer class="modal-actions">
+        <button id="gotItBtn">Mengerti</button>
+      </footer>
+    </div>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
