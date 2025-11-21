@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Surat Izin Sekolah Otomatis dimassigmaa</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <!-- NAVIGATION BAR END -->
+
+        <!-- CONTENT 1 -->
+    <div class="container">
+      <img id="siteLogo" src="img/logo.jpg" alt="SMKN1GROGOL" class="img-content" />
+        <span id="logoCaption" class="logo-caption">SMKN1GROGOL</span>
+      <nav class="nav-links" aria-label="Main navigation">
+    
+        
+
+    </div>
+  </header>
+  <div class="wrap">
+    <div class="card">
+      <div class="meta">
+        <h1>Form Surat Izin Sekolah</h1>
+        <div>
+          <button id="darkToggle" class="theme-toggle" aria-pressed="false" title="Toggle theme">
+            <span class="toggle-label">Dark mode</span>
+            <span class="switch" role="switch" aria-checked="false">
+              <svg class="icon sun" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.8 1.42-1.42zM1 13h3v-2H1v2zm10-9h2V1h-2v3zm7.45 2.46l1.79-1.8-1.41-1.41-1.8 1.79 1.42 1.42zM17 13h3v-2h-3v2zM12 18a6 6 0 100-12 6 6 0 000 12zm4.24 1.16l1.8 1.79 1.41-1.41-1.79-1.8-1.42 1.42zM11 23h2v-3h-2v3zM4.34 19.66l1.41 1.41 1.8-1.79-1.42-1.42-1.79 1.8z" fill="currentColor"/>
+              </svg>
+              <svg class="icon moon" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" fill="currentColor"/>
+              </svg>
+              <span class="knob"></span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <label>Nama</label>
+      <input id="nama" type="text" placeholder="contoh: Civitameica"/>
+
+      <label>Kelas</label>
+      <input id="kelas" type="text" placeholder="contoh: XI DPB" />
+
+      <label>Jenis Izin</label>
+      <select id="jenis">
+        <option value="sakit">Izin Sakit</option>
+        <option value="telat">Izin Telat</option>
+        <option value="acara">Izin Acara Keluarga</option>
+        <option value="disp">Dispensasi</option>
+      </select>
+
+      <label>Tanggal</label>
+      <input id="tanggal" type="date" />
+
+      <label>Catatan tambahan (opsional)</label>
+      <textarea id="catatan" placeholder="keterangan dokter, alasan singkat, dsb"></textarea>
+
+      <label>Tanda Tangan (opsional)</label>
+      <div class="signature-controls">
+        <canvas id="signaturePad" class="signature-pad" width="400" height="120"></canvas>
+        <div class="sig-meta-inputs">
+          <input id="sigName" type="text" placeholder="Nama penandatangan (mis. Budi)" />
+          <input id="sigDate" type="date" />
+        </div>
+        <div class="sig-buttons">
+          <button id="clearSig" type="button" class="secondary">Hapus</button>
+          <button id="useSig" type="button">Gunakan Tanda Tangan</button>
+          <label class="upload-label">atau Upload
+            <input id="uploadSig" type="file" accept="image/*" />
+          </label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="previewBtn">Tampilkan Preview</button>
+        <button id="downloadBtn" class="secondary">Download PDF</button>
+        <button id="resetBtn" class="secondary">Reset</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h1>Preview Surat</h1>
+      <div id="surat" class="preview-box">
+        <div id="previewTanggal" class="tanggal">Kediri, —</div>
+        <div id="previewIsi" class="preview">Isi surat akan tampil di sini.</div>
+        <div id="signatureBlock" class="signature-block" style="margin-top:16px;">
+          <img id="sigPreview" class="signature-preview" alt="Tanda Tangan" style="display:none" />
+          <div class="sig-info" style="margin-top:8px; display:none" id="sigInfo">
+            <div><strong id="sigNamePreview"></strong></div>
+            <div id="sigDatePreview" class="muted"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- html2pdf CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

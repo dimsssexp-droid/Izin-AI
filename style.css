@@ -1,0 +1,150 @@
+:root{
+  --bg:#ffffff;
+  --fg:#222222;
+  --card:#f4f4f4;
+  --muted:#777;
+  /* Switch sizing variables for responsive tweaks */
+  --switch-width:56px;
+  --switch-height:28px;
+  --knob-size:22px;
+  --switch-padding:3px;
+}
+
+/* Logo sizing (if a logo image exists) */
+#siteLogo, img.img-content {
+  max-height:60px;
+  max-width:160px;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  display:inline-block;
+  vertical-align:middle;
+}
+
+.dark{
+  --bg:#121212;
+  --fg:#eaeaea;
+  --card:#1e1e1e;
+  --muted:#999;
+}
+
+body{
+  background:var(--bg);
+  color:var(--fg);
+  margin:0;
+  font-family:Arial, sans-serif;
+  padding:20px;
+}
+.wrap{
+  display:grid;
+  gap:20px;
+  grid-template-columns:1fr 1fr;
+}
+.card{
+  background:var(--card);
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+/* Layout tweaks for header area inside cards */
+.meta{display:flex;justify-content:space-between;align-items:center;gap:12px}
+
+label{font-weight:bold;margin-top:10px;display:block;}
+input,select,textarea{
+  width:100%;padding:10px;margin:5px 0 10px;border-radius:8px;border:1px solid #ccc;background:var(--bg);color:var(--fg);
+}
+textarea{height:80px;}
+
+/* Theme toggle styles (sun/moon switch) */
+.theme-toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 8px;
+  border-radius:999px;
+  border:none;
+  cursor:pointer;
+  background:transparent;
+  color:var(--fg);
+}
+.theme-toggle .toggle-label{font-size:14px;font-weight:700}
+.switch{position:relative;width:var(--switch-width);height:var(--switch-height);background:#ddd;border-radius:999px;display:inline-flex;align-items:center;justify-content:space-between;padding:0 var(--switch-padding);box-sizing:border-box;transition:background .2s}
+.switch .icon{color:#f5a623;opacity:1}
+.switch .icon.moon{color:#2d2d2d;opacity:0.6}
+.knob{position:absolute;top:var(--switch-padding);left:var(--switch-padding);width:var(--knob-size);height:var(--knob-size);background:#fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:left .18s cubic-bezier(.2,.9,.3,1), transform .18s}
+.dark .switch{background:#4b5563}
+.dark .switch .icon.sun{opacity:0.4}
+.dark .switch .icon.moon{opacity:1;color:#ffd54f}
+.dark .knob{transform:translateX(calc(var(--switch-width) - var(--knob-size) - (var(--switch-padding) * 2)))}
+
+.actions button{
+  padding:10px 14px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;
+}
+button{background:#ff513a;color:#fff;}
+.secondary{background:#000000;}
+
+.preview-box{
+  background:var(--bg);
+  padding:20px;
+  border-radius:8px;
+  min-height:180px;
+  border:1px solid #ccc;
+}
+.tanggal{font-size:14px;margin-bottom:15px;color:var(--muted);} 
+
+/* Signature styles */
+.signature-controls{display:flex;flex-direction:column;gap:8px}
+.signature-pad{background:#fff;border:1px solid #ccc;border-radius:8px;touch-action:none}
+.sig-buttons{display:flex;gap:8px;align-items:center}
+.sig-buttons .upload-label{display:inline-block;padding:6px 8px;border-radius:6px;background:transparent;cursor:pointer}
+.sig-buttons input[type="file"]{display:none}
+.signature-preview{max-width:320px;max-height:120px;border:1px solid #ddd}
+
+/* Signature metadata (name + date) */
+.sig-meta-inputs{display:flex;gap:8px;margin-top:6px}
+.sig-meta-inputs input[type="text"]{padding:8px;border-radius:6px;border:1px solid #ccc}
+.sig-meta-inputs input[type="date"]{padding:8px;border-radius:6px;border:1px solid #ccc}
+.sig-info{font-size:14px}
+.sig-info .muted{font-size:13px;color:var(--muted)}
+
+/* Logo caption positioning (if present) */
+.logo-caption{
+  display:inline-flex;
+  align-items:center;
+  margin-left:14px;
+  color:var(--fg);
+  font-weight:700;
+  vertical-align:middle;
+  white-space:nowrap;
+  padding-left:6px;
+  max-width:none;
+  flex:0 0 auto;
+  transform:translateY(-4px); /* nudge up */
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 600px){
+  :root{
+    --switch-width:44px;
+    --switch-height:22px;
+    --knob-size:18px;
+    --switch-padding:2px;
+  }
+
+  /* Collapse two-column layout to single column */
+  .wrap{grid-template-columns:1fr}
+
+  /* Stack header inside cards */
+  .meta{flex-direction:row;align-items:center}
+  .theme-toggle{margin-top:0;align-self:flex-end}
+
+  /* Slightly smaller card padding on small screens */
+  .card{padding:16px}
+
+  /* smaller nudge on mobile */
+  .logo-caption{transform:translateY(-2px);margin-left:8px;font-size:13px}
+}
+
+/* small utility */
+.muted{color:var(--muted)}
