@@ -93,6 +93,22 @@ button{background:#ff513a;color:#fff;}
 }
 .tanggal{font-size:14px;margin-bottom:15px;color:var(--muted);} 
 
+/* Letter-style body: make preview text wide and look like a written letter */
+.preview{
+  width:100%;
+  max-width:none;
+  text-align:justify; /* justify both edges like formal letters */
+  text-justify:inter-word;
+  line-height:1.7;
+  font-family: "Times New Roman", Times, serif;
+  font-size:16px;
+  color:var(--fg);
+  white-space:normal; /* ensure wrapping */
+}
+
+/* Keep the date/right-aligned line clear from justification */
+.preview-box .tanggal{ text-align:right; margin-bottom:18px }
+
 /* Signature styles */
 .signature-controls{display:flex;flex-direction:column;gap:8px}
 .signature-pad{background:#fff;border:1px solid #ccc;border-radius:8px;touch-action:none}
